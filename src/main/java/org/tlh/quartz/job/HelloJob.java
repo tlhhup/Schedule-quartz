@@ -15,7 +15,9 @@ public class HelloJob implements Job {
 	@Override
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
-		logger.debug("hello,Job"+new Date());
+		logger.debug("jobKey---->"+context.getJobDetail().getKey());
+		logger.debug("Trigger Key---->"+context.getTrigger().getKey());
+		logger.debug("hello,Job--->"+new Date());
 	}
 
 }

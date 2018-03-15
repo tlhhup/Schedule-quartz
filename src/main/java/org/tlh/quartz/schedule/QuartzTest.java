@@ -1,13 +1,16 @@
-package org.tlh.quartz;
+package org.tlh.quartz.schedule;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
-import static org.quartz.CronScheduleBuilder.cronSchedule;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.DateBuilder.evenMinuteDate;
 
-import org.quartz.CronTrigger;
+import java.util.Date;
+
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.tlh.quartz.job.HelloJob;
 
@@ -22,15 +25,18 @@ public class QuartzTest {
 			JobDetail job = newJob(HelloJob.class).withIdentity("job1",
 					"group1").build();
 
-			//Date runTime = evenMinuteDate(new Date());
+			Date runTime = evenMinuteDate(new Date());
 			
-			//Trigger trigger = newTrigger().withIdentity("trigger1", "group1").startAt(runTime).build();
+			Trigger trigger = newTrigger().withIdentity("trigger1", "group1").startAt(runTime).build();
 			
-			//Trigger trigger = newTrigger().withIdentity("trigger3", "group1").startNow()
-			 //       .withSchedule(simpleSchedule().withIntervalInSeconds(10).withRepeatCount(10)).build();
-			//石英调度  表达式总共有6为  具体含义
-		    CronTrigger trigger = newTrigger().withIdentity("trigger1", "group1").withSchedule(cronSchedule("0/20 * * * * ?"))
-		            .build();
+			//添加到调度中
+			scheduler.scheduleJob(job, trigger);
+			
+			
+			job=newJob(HelloJob.class).withIdentity("job2","group1").build();
+			trigger = newTrigger().withIdentity("trigger2", "group1").startNow()
+			        .withSchedule(simpleSchedule().withIntervalInSeconds(10).withRepeatCount(10)).build();
+			
 			
 			// Tell quartz to schedule the job using our trigger
 			scheduler.scheduleJob(job, trigger);
